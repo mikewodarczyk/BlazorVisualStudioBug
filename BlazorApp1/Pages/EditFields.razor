@@ -1,0 +1,101 @@
+﻿@using MyCompany.Schema
+@inherits Pages.EditFieldsBase
+@using  Microsoft.AspNetCore.Components.Forms
+<style>
+
+    .table {
+        width: 50rem;
+    }
+
+    table tr td:nth-child(1) {
+        width: 10rem;
+    }
+
+    table tr td:nth-child(2) {
+        width: 10rem;
+    }
+
+    table tr td:nth-child(3) {
+        width: 30rem;
+    }
+
+    .invalid {
+        border-color: red;
+    }
+</style>
+
+@if (Title != null)
+{
+    <h1>@Title</h1>
+}
+
+@if (Distributor != null && WarehouseLookup != null)
+{
+    <EditForm @ref="EditFormElement" @ref:suppressfield  Model="@Distributor">
+        <DataAnnotationsValidator />
+        @*<ValidationSummary />*@
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td><input id="Name" placeholder="name" value="@Distributor.Name" @onchange="@ValidateDistributorName" oninput="(this.dispatchEvent(new CustomEvent('change', { bubbles: true })))" /></td>
+                    <td>@NameValidation </td>
+                </tr>
+                <tr>
+                    <th>EDI Id Code</th>
+                    <td><input id="IdCode" placeholder="" @bind="@Distributor.IdCode" oninput="(this.dispatchEvent(new CustomEvent('change', { bubbles: true })))" /></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th>EDI Id Code Qualifier</th>
+                    <td><input id="IdCodeQualifier" placeholder="" @bind="@Distributor.IdCodeQualifier" oninput="(this.dispatchEvent(new CustomEvent('change', { bubbles: true })))" /></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th>EDI GS03 IdCode</th>
+                    <td><input id="GS03IdCodeQualifier" placeholder="" @bind="@Distributor.GS03Id" oninput="(this.dispatchEvent(new CustomEvent('change', { bubbles: true })))" /></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th>Output EDI Path</th>
+                    <td><input id="OutputEdiPath" placeholder="" @bind="@Distributor.OutputEdiPath" oninput="(this.dispatchEvent(new CustomEvent('change', { bubbles: true })))" /></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th>Input EDI Path</th>
+                    <td><input id="InputEdiPath" placeholder="" @bind="@Distributor.InputEdiPath" oninput="(this.dispatchEvent(new CustomEvent('change', { bubbles: true })))" /></td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th>Warehouse</th>
+                    <td>
+                        @if (WarehouseLookup == null)
+                        {
+                            <span>Loading ...</span>
+                        }
+                        else
+                        {
+                            <select id="WarehouseCode" value="@Distributor.WarehouseCode" @onchange="@SetWarehouseCode">
+                                @foreach (string code in WarehouseLookup.Keys)
+                                {
+                                    <option value="@(code)">@(WarehouseLookup[code])</option>
+                                }
+                            </select>
+                        }
+                    </td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+        <button id="SaveButton" @onclick="@OnSave" disabled="@SubmitDisabled">Save</button>
+        <button id="CancelButton" type="button" onclick="window.location.href='Administration/ThirdPartyDistributors'">Cancel</button>
+    </EditForm>
+
+
+}
+else
+{
+    <span>Loading...</span>
+}
+<br />
+<span id="ErrorMessage">@ErrorMessage</span>
